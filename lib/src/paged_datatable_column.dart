@@ -7,6 +7,7 @@ abstract class BaseTableColumn<TType extends Object> {
   final bool sortable;
   final bool isNumeric;
   final double? sizeFactor;
+  final double? fixedSize;
 
   const BaseTableColumn(
       {required this.id,
@@ -14,7 +15,8 @@ abstract class BaseTableColumn<TType extends Object> {
       required this.titleBuilder,
       required this.sortable,
       required this.isNumeric,
-      required this.sizeFactor})
+      required this.sizeFactor,
+      required this.fixedSize})
       : assert(title != null || titleBuilder != null,
             "Either title or titleBuilder should be provided.");
 
@@ -40,6 +42,7 @@ abstract class EditableTableColumn<TType extends Object, TValue extends Object>
       required super.titleBuilder,
       required super.sortable,
       required super.isNumeric,
+      required super.fixedSize,
       required super.sizeFactor});
 }
 
@@ -51,6 +54,7 @@ class TableColumn<TType extends Object> extends BaseTableColumn<TType> {
       {required super.title,
       required this.cellBuilder,
       super.sizeFactor = .1,
+      super.fixedSize,
       super.isNumeric = false,
       super.sortable = false,
       super.id})
@@ -76,6 +80,7 @@ class DropdownTableColumn<TType extends Object, TValue extends Object>
       super.id,
       super.sortable = false,
       super.isNumeric = false,
+      super.fixedSize,
       super.sizeFactor = .1})
       : super(titleBuilder: null);
 
@@ -92,8 +97,7 @@ class DropdownTableColumn<TType extends Object, TValue extends Object>
 }
 
 /// Defines an [EditableTableColumn] that renders a text field when double-clicked
-class TextTableColumn<TType extends Object>
-    extends EditableTableColumn<TType, String> {
+class TextTableColumn<TType extends Object> extends EditableTableColumn<TType, String> {
   final InputDecoration? decoration;
   final List<TextInputFormatter>? inputFormatters;
 
@@ -106,6 +110,7 @@ class TextTableColumn<TType extends Object>
       super.id,
       super.sortable = false,
       super.isNumeric = false,
+      super.fixedSize,
       super.sizeFactor = .1})
       : super(titleBuilder: null);
 
@@ -124,8 +129,7 @@ class TextTableColumn<TType extends Object>
 
 /// Defines an [EditableTableColumn] that renders the text of a field and when double-clicked, an overlay with a multiline, bigger text field
 /// is shown.
-class LargeTextTableColumn<TType extends Object>
-    extends EditableTableColumn<TType, String> {
+class LargeTextTableColumn<TType extends Object> extends EditableTableColumn<TType, String> {
   final InputDecoration? decoration;
   final String? label;
   final bool tooltipText;
@@ -145,6 +149,7 @@ class LargeTextTableColumn<TType extends Object>
       super.id,
       super.sortable = false,
       super.isNumeric = false,
+      super.fixedSize,
       super.sizeFactor = .1})
       : super(titleBuilder: null);
 

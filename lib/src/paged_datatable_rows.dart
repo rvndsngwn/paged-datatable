@@ -71,6 +71,7 @@ class _PagedDataTableRows<TKey extends Comparable, TResultId extends Comparable,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            // add row selector checkbox
                             if (rowsSelectable)
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
