@@ -1,6 +1,6 @@
 part of 'paged_datatable.dart';
 
-abstract class BaseTableColumn<TType extends Object> {
+abstract class BaseTableColumn<T extends Object> {
   final String? id;
   final String? title;
   final Widget Function(BuildContext context)? titleBuilder;
@@ -18,19 +18,19 @@ abstract class BaseTableColumn<TType extends Object> {
       : assert(title != null || titleBuilder != null,
             "Either title or titleBuilder should be provided.");
 
-  Widget buildCell(TType item, int rowIndex);
+  Widget buildCell(T item, int rowIndex);
 }
 
 /// Defines a [BaseTableColumn] that allows the content of a cell to be modified, updating the underlying
 /// item too.
-abstract class EditableTableColumn<TType extends Object, TValue extends Object>
-    extends BaseTableColumn<TType> {
-  /// Function called when the value of the cell changes, and must update the underlying [TType], returning
+abstract class EditableTableColumn<T extends Object, TValue extends Object>
+    extends BaseTableColumn<T> {
+  /// Function called when the value of the cell changes, and must update the underlying [T], returning
   /// true if it could be updated, otherwise, false.
-  final Setter<TType, TValue> setter;
+  final Setter<T, TValue> setter;
 
   /// A function that returns the value that is going to be edited.
-  final Getter<TType, TValue> getter;
+  final Getter<T, TValue> getter;
 
   const EditableTableColumn(
       {required this.setter,
@@ -44,8 +44,8 @@ abstract class EditableTableColumn<TType extends Object, TValue extends Object>
 }
 
 /// Defines a simple [BaseTableColumn] that renders a cell based on [cellBuilder]
-class TableColumn<TType extends Object> extends BaseTableColumn<TType> {
-  final Widget Function(TType) cellBuilder;
+class TableColumn<T extends Object> extends BaseTableColumn<T> {
+  final Widget Function(T) cellBuilder;
 
   const TableColumn(
       {required super.title,
@@ -58,12 +58,12 @@ class TableColumn<TType extends Object> extends BaseTableColumn<TType> {
         super(titleBuilder: null);
 
   @override
-  Widget buildCell(TType item, int rowIndex) => cellBuilder(item);
+  Widget buildCell(T item, int rowIndex) => cellBuilder(item);
 }
 
 /// Defines an [EditableTableColumn] that renders a [DropdownFormField] with a list of items.
-class DropdownTableColumn<TType extends Object, TValue extends Object>
-    extends EditableTableColumn<TType, TValue> {
+class DropdownTableColumn<T extends Object, TValue extends Object>
+    extends EditableTableColumn<T, TValue> {
   final List<DropdownMenuItem<TValue>> items;
   final InputDecoration? decoration;
 
@@ -80,8 +80,8 @@ class DropdownTableColumn<TType extends Object, TValue extends Object>
       : super(titleBuilder: null);
 
   @override
-  Widget buildCell(TType item, int rowIndex) {
-    return _DropdownButtonCell<TType, TValue>(
+  Widget buildCell(T item, int rowIndex) {
+    return _DropdownButtonCell<T, TValue>(
       item: item,
       items: items,
       decoration: decoration,
@@ -92,8 +92,7 @@ class DropdownTableColumn<TType extends Object, TValue extends Object>
 }
 
 /// Defines an [EditableTableColumn] that renders a text field when double-clicked
-class TextTableColumn<TType extends Object>
-    extends EditableTableColumn<TType, String> {
+class TextTableColumn<T extends Object> extends EditableTableColumn<T, String> {
   final InputDecoration? decoration;
   final List<TextInputFormatter>? inputFormatters;
 
@@ -110,8 +109,8 @@ class TextTableColumn<TType extends Object>
       : super(titleBuilder: null);
 
   @override
-  Widget buildCell(TType item, int rowIndex) {
-    return _TextFieldCell<TType>(
+  Widget buildCell(T item, int rowIndex) {
+    return _TextFieldCell<T>(
       isNumeric: isNumeric,
       item: item,
       inputFormatters: inputFormatters,
@@ -124,8 +123,7 @@ class TextTableColumn<TType extends Object>
 
 /// Defines an [EditableTableColumn] that renders the text of a field and when double-clicked, an overlay with a multiline, bigger text field
 /// is shown.
-class LargeTextTableColumn<TType extends Object>
-    extends EditableTableColumn<TType, String> {
+class LargeTextTableColumn<T extends Object> extends EditableTableColumn<T, String> {
   final InputDecoration? decoration;
   final String? label;
   final bool tooltipText;
@@ -149,7 +147,7 @@ class LargeTextTableColumn<TType extends Object>
       : super(titleBuilder: null);
 
   @override
-  Widget buildCell(TType item, int rowIndex) {
+  Widget buildCell(T item, int rowIndex) {
     return _EditableTextField(
         tooltipText: tooltipText,
         tooltipMargin: tooltipMargin,

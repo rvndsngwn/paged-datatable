@@ -1,9 +1,7 @@
 part of 'paged_datatable.dart';
 
-class _PagedDataTableHeaderRow<
-    TKey extends Comparable,
-    TResultId extends Comparable,
-    TResult extends Object> extends StatelessWidget {
+class _PagedDataTableHeaderRow<TKey extends Comparable, TId extends Comparable, T extends Object>
+    extends StatelessWidget {
   final bool rowsSelectable;
   final double width;
 
@@ -19,20 +17,16 @@ class _PagedDataTableHeaderRow<
         fit: StackFit.expand,
         children: [
           /* COLUMNS */
-          Selector<_PagedDataTableState<TKey, TResultId, TResult>, int>(
+          Selector<_PagedDataTableState<TKey, TId, T>, int>(
               selector: (context, state) => state._sortChange,
               builder: (context, isSorted, child) {
-                var state = context
-                    .read<_PagedDataTableState<TKey, TResultId, TResult>>();
+                var state = context.read<_PagedDataTableState<TKey, TId, T>>();
                 return Row(children: [
                   if (rowsSelectable)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Selector<
-                              _PagedDataTableState<TKey, TResultId, TResult>,
-                              int>(
-                          selector: (context, model) =>
-                              model._rowsSelectionChange,
+                      child: Selector<_PagedDataTableState<TKey, TId, T>, int>(
+                          selector: (context, model) => model._rowsSelectionChange,
                           builder: (context, value, child) {
                             return SizedBox(
                               width: width * .05,
@@ -41,8 +35,7 @@ class _PagedDataTableHeaderRow<
                                   return Checkbox(
                                     value: state.selectedRows.isEmpty
                                         ? false
-                                        : state.selectedRows.length ==
-                                                state._items.length
+                                        : state.selectedRows.length == state._items.length
                                             ? true
                                             : null,
                                     tristate: true,
@@ -58,8 +51,7 @@ class _PagedDataTableHeaderRow<
                                           break;
 
                                         case null:
-                                          if (state.selectedRows.length ==
-                                              state._items.length) {
+                                          if (state.selectedRows.length == state._items.length) {
                                             state.unselectAllRows();
                                           }
                                           break;
@@ -73,9 +65,7 @@ class _PagedDataTableHeaderRow<
                     ),
                   ...state.columns.map((column) {
                     Widget child = MouseRegion(
-                      cursor: column.sortable
-                          ? SystemMouseCursors.click
-                          : SystemMouseCursors.basic,
+                      cursor: column.sortable ? SystemMouseCursors.click : SystemMouseCursors.basic,
                       child: GestureDetector(
                         onTap: column.sortable
                             ? () {
@@ -83,12 +73,10 @@ class _PagedDataTableHeaderRow<
                               }
                             : null,
                         child: Row(
-                          mainAxisAlignment: column.isNumeric
-                              ? MainAxisAlignment.end
-                              : MainAxisAlignment.start,
+                          mainAxisAlignment:
+                              column.isNumeric ? MainAxisAlignment.end : MainAxisAlignment.start,
                           children: [
-                            if (state.hasSortModel &&
-                                state._sortModel!.columnId == column.id) ...[
+                            if (state.hasSortModel && state._sortModel!.columnId == column.id) ...[
                               state._sortModel!._descending
                                   ? const Icon(Icons.arrow_downward_rounded)
                                   : const Icon(Icons.arrow_upward_rounded),
@@ -97,8 +85,7 @@ class _PagedDataTableHeaderRow<
                             Flexible(
                                 child: column.title != null
                                     ? Text(column.title!,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
                                         overflow: TextOverflow.ellipsis)
                                     : column.titleBuilder!(context))
                           ],
@@ -127,8 +114,7 @@ class _PagedDataTableHeaderRow<
           Positioned(
               bottom: 0,
               width: MediaQuery.of(context).size.width,
-              child: Selector<_PagedDataTableState<TKey, TResultId, TResult>,
-                      _TableState>(
+              child: Selector<_PagedDataTableState<TKey, TId, T>, _TableState>(
                   selector: (context, state) => state._state,
                   builder: (context, tableState, child) {
                     return AnimatedOpacity(

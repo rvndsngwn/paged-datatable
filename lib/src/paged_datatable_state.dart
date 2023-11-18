@@ -1,23 +1,21 @@
 part of 'paged_datatable.dart';
 
 /// [_PagedDataTableState] represents the "current" state of the table.
-class _PagedDataTableState<
-    TKey extends Comparable,
-    TResultId extends Comparable,
-    TResult extends Object> extends ChangeNotifier {
+class _PagedDataTableState<TKey extends Comparable, TId extends Comparable, T extends Object>
+    extends ChangeNotifier {
   int _pageSize;
   SortBy? _sortModel;
   Object? _currentError;
   _TableState _state = _TableState.loading;
 
   // A map that contains the state of the rows in the current resultset
-  List<_PagedDataTableRowState<TResultId, TResult>> _rowsState = const [];
+  List<_PagedDataTableRowState<TId, T>> _rowsState = const [];
 
   /// Maps an item id with its index in the [_rowsState] list.
-  Map<TResultId, int> _rowsStateMapper = const {};
+  Map<TId, int> _rowsStateMapper = const {};
 
   /// The list of items in the current resulset.
-  List<TResult> _items = const [];
+  List<T> _items = const [];
 
   /// The list of pagination keys used
   Map<int, TKey> _paginationKeys;
@@ -44,18 +42,18 @@ class _PagedDataTableState<
   final Stream? refreshListener;
   final ScrollController filterChipsScrollController = ScrollController();
   final ScrollController rowsScrollController = ScrollController();
-  final PagedDataTableController<TKey, TResultId, TResult> controller;
-  final FetchCallback<TKey, TResult> fetchCallback;
-  final List<BaseTableColumn<TResult>> columns;
+  final PagedDataTableController<TKey, TId, T> controller;
+  final FetchCallback<TKey, T> fetchCallback;
+  final List<BaseTableColumn<T>> columns;
   final Map<String, TableFilterState> filters;
-  final ModelIdGetter<TResultId, TResult> idGetter;
+  final ModelIdGetter<TId, T> idGetter;
   final GlobalKey<FormState> filtersFormKey = GlobalKey();
   final bool rowsSelectable;
   late final double columnsSizeFactor;
   late final int lengthColumnsWithoutSizeFactor;
 
   /// Contains a list of selected rows. If the page changes, this remain untouched.
-  final Map<TResultId, int> selectedRows = {};
+  final Map<TId, int> selectedRows = {};
 
   _TableState get tableState => _state;
   bool get hasSortModel => _sortModel != null;
@@ -80,15 +78,14 @@ class _PagedDataTableState<
       required this.idGetter,
       required this.rowsSelectable,
       required List<TableFilter>? filters,
-      required PagedDataTableController<TKey, TResultId, TResult>? controller,
+      required PagedDataTableController<TKey, TId, T>? controller,
       required this.refreshListener,
       required int pageSize})
       : controller = controller ?? PagedDataTableController(),
         _pageSize = pageSize,
         _paginationKeys = {0: initialPage},
-        filters = filters == null
-            ? {}
-            : {for (var v in filters) v.id: TableFilterState._internal(v)} {
+        filters =
+            filters == null ? {} : {for (var v in filters) v.id: TableFilterState._internal(v)} {
     _init();
   }
 
@@ -100,8 +97,7 @@ class _PagedDataTableState<
   }
 
   void setSortBy(String columnId, bool descending) {
-    if (_sortModel?.columnId == columnId &&
-        _sortModel?.descending == descending) {
+    if (_sortModel?.columnId == columnId && _sortModel?.descending == descending) {
       return;
     }
 
@@ -167,7 +163,7 @@ class _PagedDataTableState<
     _dispatchCallback();
   }
 
-  void selectRow(TResultId itemId) {
+  void selectRow(TId itemId) {
     final itemIndex = _rowsStateMapper[itemId];
     if (itemIndex == null) {
       return;
@@ -179,7 +175,7 @@ class _PagedDataTableState<
     notifyListeners();
   }
 
-  void unselectRow(TResultId itemId) {
+  void unselectRow(TId itemId) {
     final itemIndex = _rowsStateMapper[itemId];
     if (itemIndex == null) {
       return;
@@ -235,8 +231,8 @@ class _PagedDataTableState<
 
     try {
       // fetch elements
-      var pageIndicator = await fetchCallback(
-          lookupKey, _pageSize, _sortModel, Filtering._internal(filters));
+      var pageIndicator =
+          await fetchCallback(lookupKey, _pageSize, _sortModel, Filtering._internal(filters));
 
       // if has errors, throw it and let "catch" handle it
       if (pageIndicator.hasError) {
@@ -269,8 +265,7 @@ class _PagedDataTableState<
             duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
       }
     } catch (err, stack) {
-      debugPrint(
-          'An error ocurred trying to fetch elements from key "$lookupKey". Error: $err');
+      debugPrint('An error ocurred trying to fetch elements from key "$lookupKey". Error: $err');
       debugPrint(stack.toString());
 
       // store the error so the errorBuilder can display it

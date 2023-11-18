@@ -2,18 +2,15 @@
 
 part of 'paged_datatable.dart';
 
-typedef FetchCallback<TKey extends Object, TResult extends Object>
-    = FutureOr<PaginationResult<TKey, TResult>> Function(
-        TKey pageToken, int pageSize, SortBy? sortBy, Filtering filtering);
+typedef FetchCallback<TKey extends Object, T extends Object> = FutureOr<PaginationResult<TKey, T>>
+    Function(TKey pageToken, int pageSize, SortBy? sortBy, Filtering filtering);
 
 typedef ErrorBuilder = Widget Function(Object error);
 typedef WidgetBuilder = Widget Function(BuildContext context);
 
-typedef ModelIdGetter<TResultId extends Comparable, TResult extends Object>
-    = TResultId Function(TResult item);
+typedef ModelIdGetter<TId extends Comparable, T extends Object> = TId Function(T item);
 
-typedef Getter<T extends Object, TValue extends Object> = TValue? Function(
-    T item);
+typedef Getter<T extends Object, TValue extends Object> = TValue? Function(T item);
 typedef Setter<T extends Object, TValue> = FutureOr<bool> Function(
     T item, TValue newValue, int rowIndex);
 
@@ -58,17 +55,16 @@ class Filtering {
   }
 }
 
-typedef RowBuilder<TResult extends Object> = Widget Function(
-    BuildContext context, TResult item);
+typedef RowBuilder<T extends Object> = Widget Function(BuildContext context, T item);
 
 /// Allows you to pass a custom [RowBuilder] method.
-class CustomRowBuilder<TResult extends Object> {
+class CustomRowBuilder<T extends Object> {
   /// The callback used to build the row.
-  final RowBuilder<TResult> builder;
+  final RowBuilder<T> builder;
 
   /// A function that gets called before [builder], in order to determine if the callback should
   /// be used or not.
-  final bool Function(BuildContext context, TResult item) shouldUse;
+  final bool Function(BuildContext context, T item) shouldUse;
 
   CustomRowBuilder({required this.builder, required this.shouldUse});
 }

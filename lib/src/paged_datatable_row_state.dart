@@ -1,9 +1,8 @@
 part of 'paged_datatable.dart';
 
-class _PagedDataTableRowState<TResultId extends Comparable,
-    TResult extends Object> extends ChangeNotifier {
-  final TResult item;
-  final TResultId itemId;
+class _PagedDataTableRowState<TId extends Comparable, T extends Object> extends ChangeNotifier {
+  final T item;
+  final TId itemId;
   final int index;
 
   bool _isSelected = false;

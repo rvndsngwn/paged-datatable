@@ -1,9 +1,9 @@
 part of 'paged_datatable.dart';
 
 /// Contains a set of elements and optionally a next page token
-class PaginationResult<TPaginationKey extends Object, TResult extends Object> {
+class PaginationResult<TPaginationKey extends Object, T extends Object> {
   final TPaginationKey? _nextPageToken;
-  final List<TResult>? _elements;
+  final List<T>? _elements;
   final Object? _error;
   final int? _length;
 
@@ -13,13 +13,10 @@ class PaginationResult<TPaginationKey extends Object, TResult extends Object> {
   int get length => _length ?? _elements!.length;
 
   Object get error => _error!;
-  List<TResult> get elements => _elements!;
+  List<T> get elements => _elements!;
   TPaginationKey? get nextPageToken => _nextPageToken;
 
-  PaginationResult.items(
-      {required List<TResult> elements,
-      TPaginationKey? nextPageToken,
-      int? size})
+  PaginationResult.items({required List<T> elements, TPaginationKey? nextPageToken, int? size})
       : _nextPageToken = nextPageToken,
         _elements = List.from(
             elements), // Creates a new list because we need to maintain our own cache in order to allow row deletion

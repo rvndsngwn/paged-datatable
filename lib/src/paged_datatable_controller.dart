@@ -3,29 +3,29 @@
 part of 'paged_datatable.dart';
 
 /// Represents a controller of a [PagedDataTable]
-class PagedDataTableController<TKey extends Comparable,
-    TResultId extends Comparable, TResult extends Object> {
-  late final _PagedDataTableState<TKey, TResultId, TResult> _state;
+class PagedDataTableController<TKey extends Comparable, TId extends Comparable, T extends Object> {
+  late final _PagedDataTableState<TKey, TId, T> _state;
 
-  /// Returns the current showing dataset elements as an unmodifiable list.
-  List<TResult> get currentDataset => UnmodifiableListView(_state._items);
+  /// The current showing dataset elements as an unmodifiable list.
+  List<T> get currentDataset => UnmodifiableListView(_state._items);
 
-  /// Returns the actual pagination info
-  PagedDataTablePaginationInfo get paginationInfo =>
-      PagedDataTablePaginationInfo._(
-          currentPage: _state.currentPage,
-          currentPageSize: _state._items.length,
-          hasNextPage: _state.hasNextPage,
-          rowsPerPage: _state._pageSize,
-          hasPreviousPage: _state.hasPreviousPage);
+  /// The current pagination info
+  PagedDataTablePaginationInfo get paginationInfo => PagedDataTablePaginationInfo._(
+      currentPage: _state.currentPage,
+      currentPageSize: _state._items.length,
+      hasNextPage: _state.hasNextPage,
+      rowsPerPage: _state._pageSize,
+      hasPreviousPage: _state.hasPreviousPage);
+
+  /// The current applied sort model, if any
+  SortBy? get sortBy => _state._sortModel;
 
   /// Refreshes the table fetching from source again.
   /// If [currentDataset] is true, it will only refresh the current viewing resultset, otherwise,
   /// it will start from page 1.
   ///
   /// The future completes when the fetch is done.
-  Future<void> refresh({bool currentDataset = true}) =>
-      _state._refresh(initial: !currentDataset);
+  Future<void> refresh({bool currentDataset = true}) => _state._refresh(initial: !currentDataset);
 
   /// Advances to the next page.
   ///
@@ -65,10 +65,8 @@ class PagedDataTableController<TKey extends Comparable,
   }
 
   /// Returns a list of the selected items.
-  List<TResult> getSelectedRows() {
-    return _state.selectedRows.values
-        .map((e) => _state._items[e])
-        .toList(growable: false);
+  List<T> getSelectedRows() {
+    return _state.selectedRows.values.map((e) => _state._items[e]).toList(growable: false);
   }
 
   /// Unselects any selected row in the current resultset
@@ -78,13 +76,13 @@ class PagedDataTableController<TKey extends Comparable,
   void selectAllRows() => _state.selectAllRows();
 
   /// Marks the row whose id is [itemId] as unselected
-  void unselectRow(TResultId itemId) => _state.unselectRow(itemId);
+  void unselectRow(TId itemId) => _state.unselectRow(itemId);
 
   /// Marks the row whose id is [itemId] as selected
-  void selectRow(TResultId itemId) => _state.selectRow(itemId);
+  void selectRow(TId itemId) => _state.selectRow(itemId);
 
   /// Builds every row that matches [predicate].
-  void refreshRowWhere(bool Function(TResult element) predicate) {
+  void refreshRowWhere(bool Function(T element) predicate) {
     var elements = _state._rowsState.where((state) => predicate(state.item));
     for (var elem in elements) {
       elem.refresh();
@@ -94,8 +92,7 @@ class PagedDataTableController<TKey extends Comparable,
   /// Updates every item from the current resultset that matches [predicate] and rebuilds it.
   ///
   /// Keep in mind this method will iterate over every item in the current dataset, so, if the dataset is large, it can be costly.
-  void modifyRowsValue(bool Function(TResult element) predicate,
-      void Function(TResult item) update) {
+  void modifyRowsValue(bool Function(T element) predicate, void Function(T item) update) {
     int index = 0;
     for (final item in _state._items) {
       if (predicate(item)) {
@@ -108,11 +105,10 @@ class PagedDataTableController<TKey extends Comparable,
   }
 
   /// Updates an item from the current resultset with the id [itemId] and rebuilds the row.
-  void modifyRowValue(TResultId itemId, void Function(TResult item) update) {
+  void modifyRowValue(TId itemId, void Function(T item) update) {
     final rowIndex = _state._rowsStateMapper[itemId];
     if (rowIndex == null) {
-      throw TableError(
-          'Item with key "$itemId" is not in the current dataset.');
+      throw TableError('Item with key "$itemId" is not in the current dataset.');
     }
 
     final row = _state._rowsState[rowIndex];
@@ -124,22 +120,20 @@ class PagedDataTableController<TKey extends Comparable,
   }
 
   /// Rebuilds the row which has the specified [itemId] to reflect changes to the item.
-  void refreshRow(TResultId itemId) {
+  void refreshRow(TId itemId) {
     final rowIndex = _state._rowsStateMapper[itemId];
     if (rowIndex == null) {
-      throw TableError(
-          'Item with key "$itemId" is not in the current dataset.');
+      throw TableError('Item with key "$itemId" is not in the current dataset.');
     }
 
     _state._rowsState[rowIndex].refresh();
   }
 
   /// Removes the row containing an element whose id is [itemId]
-  void removeRow(TResultId itemId) {
+  void removeRow(TId itemId) {
     final rowIndex = _state._rowsStateMapper[itemId];
     if (rowIndex == null) {
-      throw TableError(
-          'Item with key "$itemId" is not in the current dataset.');
+      throw TableError('Item with key "$itemId" is not in the current dataset.');
     }
 
     _state._rowsState.removeAt(rowIndex);
