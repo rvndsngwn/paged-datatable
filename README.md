@@ -130,7 +130,8 @@ Every filter type requires an `id`, a `title` and a `chipFormatter`. You will us
 - `DropdownTableFilter<TValue>` allows selecting the filter value in a Dropdown, being `TValue` the type of items the Dropdown will be holding.
 - `DatePickerTableFilter` renders a TextField that opens a `DateTimePicker` when clicked.
 - `DateRangePickerTableFilter` works the same as `DatePickerTableFilter` but for `DateTimeRange`.
-  > If you need more, you always can [create your own filter](#custom-filter)
+
+> If you need more, you always can [create your own filter](#custom-filter)
 
 ### Menu
 
