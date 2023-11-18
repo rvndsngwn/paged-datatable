@@ -1,3 +1,9 @@
+## 1.5.0
+
+### Breaking changes
+
+- `PagedDataTable` widget's signature is now `PagedDataTable<TKey, T, TId>`. Previously it was `PagedDataTable<TKey, TId, T>`
+
 ## 1.4.4
 
 - Add support for 'de' locale
