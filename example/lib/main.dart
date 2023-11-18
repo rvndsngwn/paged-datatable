@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: const [Locale("es"), Locale("en")],
       locale: const Locale("en"),
-      title: 'Flutter Demo',
+      title: 'PagedDataTable package demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           colorScheme: const ColorScheme.light(primary: Colors.deepPurple, secondary: Colors.teal),
