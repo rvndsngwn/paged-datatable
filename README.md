@@ -102,7 +102,8 @@ The `sortBy` argument has two properties: `columnId`, the id you specified in th
 - `DropdownTableColumn<T, TValue>` renders a dropdown in the cell, useful for updating enum fields. `T` is your object and `TValue` is the type of items the dropdown will be displaying.
 - `TextTableColumn<T>` display text like `TableColumn`, but when you double-click it, a text field will be displayed, allowing you to edit its content and save on enter.
 - `LargeTextTableColumn<T>` acts like `TextTableColumn`, but when you double-click it, an overlay is shown with a multiline text field.
-  > If you need more, you always can [create your own column](#custom-column).
+
+> If you need more, you always can [create your own column](#custom-column).
 
 ### Filters
 
